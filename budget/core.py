@@ -8,9 +8,12 @@ def add_transaction(transactions: list[dict], transaction: dict) -> list[dict]:
     return updated_transactions
 
 
-def get_balance(transactions: list[dict]) -> int:
+def get_balance(transactions: list[dict]) -> float:
     """Return the net balance for the provided transactions."""
-    pass
+    balance = 0.0
+    for transaction in transactions:
+        balance += transaction["amount"]
+    return balance
 
 
 def filter_by_category(transactions: list[dict], category: str) -> list[dict]:
