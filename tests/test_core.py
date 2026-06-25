@@ -5,6 +5,7 @@ from budget.core import (
     filter_by_category,
     get_balance,
     load_transactions_from_csv,
+    monthly_summary,
 )
 
 
@@ -222,4 +223,44 @@ def test_load_transactions_from_csv_reads_step1_transactions() -> None:
         "amount": 25000,
         "memo": "중고마켓",
     }
-    assert all(isinstance(transaction["amount"], int) for transaction in result)
+    assert all(
+        isinstance(transaction["amount"], int)
+        for transaction in result
+    )
+
+
+def test_monthly_summary_aggregates_income_expense_and_net() -> None:
+    """Monthly summary should group totals by YYYY-MM."""
+    transactions = [
+        {
+            "date": "2026-01-05",
+            "type": "수입",
+            "category": "급여",
+            "description": "월급",
+            "amount": 3500000,
+            "memo": "",
+        },
+        {
+            "date": "2026-01-10",
+            "type": "지출",
+            "category": "식비",
+            "description": "점심식사",
+            "amount": -12000,
+            "memo": "",
+        },
+        {
+            "date": "2026-02-01",
+            "type": "기타수입",
+            "category": "기타수입",
+            "description": "중고 판매",
+            "amount": 25000,
+            "memo": "중고마켓",
+        },
+    ]
+
+    result = monthly_summary(transactions)
+
+    assert result == {
+        "2026-01": {"income": 3500000, "expense": -12000, "net": 3488000},
+        "2026-02": {"income": 25000, "expense": 0, "net": 25000},
+    }

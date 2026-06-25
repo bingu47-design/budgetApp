@@ -4,7 +4,7 @@ from csv import DictReader
 
 
 def add_transaction(transactions: list[dict], transaction: dict) -> list[dict]:
-    """Add a transaction to the transaction list and return the updated list."""
+    """Add a transaction and return the updated transaction list."""
     updated_transactions = transactions.copy()
     updated_transactions.append(transaction)
     return updated_transactions
