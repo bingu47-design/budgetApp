@@ -3,7 +3,9 @@
 
 def add_transaction(transactions: list[dict], transaction: dict) -> list[dict]:
     """Add a transaction to the transaction list and return the updated list."""
-    pass
+    updated_transactions = transactions.copy()
+    updated_transactions.append(transaction)
+    return updated_transactions
 
 
 def get_balance(transactions: list[dict]) -> int:
@@ -24,4 +26,3 @@ def load_transactions_from_csv(file_path: str) -> list[dict]:
 def monthly_summary(transactions: list[dict]) -> dict[str, dict[str, int]]:
     """Return a monthly income, expense, and net summary."""
     pass
-
