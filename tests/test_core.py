@@ -1,6 +1,6 @@
 """Tests for budget.core."""
 
-from budget.core import add_transaction, get_balance
+from budget.core import add_transaction, filter_by_category, get_balance
 
 
 def test_add_transaction_increases_length() -> None:
@@ -120,3 +120,77 @@ def test_get_balance_sums_real_step2_transactions() -> None:
     result = get_balance(transactions)
 
     assert result == 3474399
+
+
+def test_filter_by_category_matches_case_insensitively() -> None:
+    """Category matching should ignore case for ASCII input."""
+    transactions = [
+        {
+            "date": "2026-01-04",
+            "type": "지출",
+            "category": "여행",
+            "description": "항공권",
+            "amount": -979796,
+            "memo": "메모_3",
+        },
+        {
+            "date": "2026-01-05",
+            "type": "지출",
+            "category": "의료",
+            "description": "한의원",
+            "amount": -65990,
+            "memo": "카드결제",
+        },
+    ]
+
+    result = filter_by_category(transactions, "여행")
+
+    assert len(result) == 1
+    assert result[0]["category"] == "여행"
+
+
+def test_filter_by_category_returns_empty_list_for_missing_category() -> None:
+    """Unknown categories should return an empty list."""
+    transactions = [
+        {
+            "date": "2026-01-04",
+            "type": "지출",
+            "category": "여행",
+            "description": "항공권",
+            "amount": -979796,
+            "memo": "메모_3",
+        }
+    ]
+
+    result = filter_by_category(transactions, "식비")
+
+    assert result == []
+
+
+def test_filter_by_category_returns_independent_list() -> None:
+    """The filtered result should not mutate the original transaction list."""
+    transactions = [
+        {
+            "date": "2026-01-04",
+            "type": "지출",
+            "category": "여행",
+            "description": "항공권",
+            "amount": -979796,
+            "memo": "메모_3",
+        }
+    ]
+
+    result = filter_by_category(transactions, "여행")
+    result.append(
+        {
+            "date": "2026-01-99",
+            "type": "지출",
+            "category": "여행",
+            "description": "추가",
+            "amount": -1,
+            "memo": "",
+        }
+    )
+
+    assert len(transactions) == 1
+    assert len(result) == 2

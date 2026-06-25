@@ -18,7 +18,12 @@ def get_balance(transactions: list[dict]) -> float:
 
 def filter_by_category(transactions: list[dict], category: str) -> list[dict]:
     """Return transactions matching the given category."""
-    pass
+    normalized_category = category.casefold()
+    filtered_transactions = []
+    for transaction in transactions:
+        if transaction["category"].casefold() == normalized_category:
+            filtered_transactions.append(transaction)
+    return filtered_transactions
 
 
 def load_transactions_from_csv(file_path: str) -> list[dict]:
